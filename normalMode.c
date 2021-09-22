@@ -21,7 +21,7 @@ struct NormalModeState {
 DynamicArray searchStr=UTF8_ARRAY, cCmd=UTF8_ARRAY, lCmd=UTF8_ARRAY;
 Glyph styleCmd;
 char posBuffer[10], braces[6][3] = { {"()"}, {"<>"}, {"{}"}, {"[]"}, {"\"\""}, {"''"}};
-int exited=1, overlay=1;
+int exited=1, overlay=0;
 static inline Rune cChar() { return term.line[term.c.y][term.c.x].u; }
 static inline int pos(int p, int h) {return IS_SET(MODE_ALTSCREEN)?p:rangeY(p+h*histOff-insertOff);}
 static inline int contains(Rune l, char const * values, size_t const memSize) {
@@ -264,8 +264,8 @@ void historyOverlay(int x, int y, Glyph* g) {
 		else if (x > term.col - 7) g->u = (Rune)(posBuffer[x - term.col + 7]);
 		else getChar(size(&cCmd) ?&cCmd :&lCmd, g, term.row-1, term.col-7, term.col/3-6, x);
 	} else if (highlighted(x, y)) g->bg = highlightBg, g->fg = highlightFg;
-	else if ((x==cHist->x) ^ (y==cHist->y)) g->bg = currentBg;
-	else if (x==cHist->x) g->mode^=ATTR_REVERSE;
+	else if ((x==cHist->x) && (y==cHist->y)) g->bg = currentBg;
+	//else if (x==cHist->x) g->mode^=ATTR_REVERSE;
 }
 void historyPreDraw() {
 	static Pos op = {.p={0, 0, 0}};
